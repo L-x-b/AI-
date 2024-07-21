@@ -29,8 +29,8 @@ module.exports = {
     //     .plugin('prerender')
     //     .use(new Prerender({
     //       staticDir,
-    //       routes: [ '/pages/index/index' ],
-    //       postProcess: (context) => ({ ...context, outputPath: path.join(staticDir, 'index.html') })
+    //       routes: [ '/pages/index_bak/index_bak' ],
+    //       postProcess: (context) => ({ ...context, outputPath: path.join(staticDir, 'index_bak.html') })
     //     }))
     // }
   }
