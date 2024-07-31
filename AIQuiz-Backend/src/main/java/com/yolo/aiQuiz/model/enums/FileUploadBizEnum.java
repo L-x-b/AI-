@@ -3,6 +3,7 @@ package com.yolo.aiQuiz.model.enums;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.ObjectUtils;
 
 /**
@@ -13,7 +14,9 @@ import org.apache.commons.lang3.ObjectUtils;
  */
 public enum FileUploadBizEnum {
 
-    USER_AVATAR("用户头像", "user_avatar");
+    USER_AVATAR("用户头像", "user_avatar"),
+    APP_ICON("APP图标", "app_icon"),
+    ANSWER_RESULT_PICTURE("结果图片", "answer_result_picture");
 
     private final String text;
 
