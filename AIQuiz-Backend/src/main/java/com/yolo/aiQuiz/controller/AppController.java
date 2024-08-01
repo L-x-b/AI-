@@ -2,10 +2,7 @@ package com.yolo.aiQuiz.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yolo.aiQuiz.annotation.AuthCheck;
-import com.yolo.aiQuiz.common.BaseResponse;
-import com.yolo.aiQuiz.common.DeleteRequest;
-import com.yolo.aiQuiz.common.ErrorCode;
-import com.yolo.aiQuiz.common.ResultUtils;
+import com.yolo.aiQuiz.common.*;
 import com.yolo.aiQuiz.constant.UserConstant;
 import com.yolo.aiQuiz.exception.BusinessException;
 import com.yolo.aiQuiz.exception.ThrowUtils;
@@ -25,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * 应用接口
@@ -60,7 +58,7 @@ public class AppController {
         // 填充默认值
         User loginUser = userService.getLoginUser(request);
         app.setUserId(loginUser.getId());
-        app.setReviewerId(ReviewStatusEnum.PENDING_REVIEW.getValue());
+        app.setReviewStatus(ReviewStatusEnum.PENDING_REVIEW.getValue());
         // 写入数据库
         boolean result = appService.save(app);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
@@ -151,8 +149,7 @@ public class AppController {
         long current = appQueryRequest.getCurrent();
         long size = appQueryRequest.getPageSize();
         // 查询数据库
-        Page<App> appPage = appService.page(new Page<>(current, size),
-                appService.getQueryWrapper(appQueryRequest));
+        Page<App> appPage = appService.page(new Page<>(current, size), appService.getQueryWrapper(appQueryRequest));
         return ResultUtils.success(appPage);
     }
 
@@ -164,15 +161,15 @@ public class AppController {
      * @return
      */
     @PostMapping("/list/page/vo")
-    public BaseResponse<Page<AppVO>> listAppVOByPage(@RequestBody AppQueryRequest appQueryRequest,
-                                                     HttpServletRequest request) {
+    public BaseResponse<Page<AppVO>> listAppVOByPage(@RequestBody AppQueryRequest appQueryRequest, HttpServletRequest request) {
         long current = appQueryRequest.getCurrent();
         long size = appQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        // 只能看到过审的应用
+        appQueryRequest.setReviewStatus(ReviewStatusEnum.APPROVED.getValue());
         // 查询数据库
-        Page<App> appPage = appService.page(new Page<>(current, size),
-                appService.getQueryWrapper(appQueryRequest));
+        Page<App> appPage = appService.page(new Page<>(current, size), appService.getQueryWrapper(appQueryRequest));
         // 获取封装类
         return ResultUtils.success(appService.getAppVOPage(appPage, request));
     }
@@ -185,8 +182,7 @@ public class AppController {
      * @return
      */
     @PostMapping("/my/list/page/vo")
-    public BaseResponse<Page<AppVO>> listMyAppVOByPage(@RequestBody AppQueryRequest appQueryRequest,
-                                                       HttpServletRequest request) {
+    public BaseResponse<Page<AppVO>> listMyAppVOByPage(@RequestBody AppQueryRequest appQueryRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(appQueryRequest == null, ErrorCode.PARAMS_ERROR);
         // 补充查询条件，只查询当前登录用户的数据
         User loginUser = userService.getLoginUser(request);
@@ -196,8 +192,7 @@ public class AppController {
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 查询数据库
-        Page<App> appPage = appService.page(new Page<>(current, size),
-                appService.getQueryWrapper(appQueryRequest));
+        Page<App> appPage = appService.page(new Page<>(current, size), appService.getQueryWrapper(appQueryRequest));
         // 获取封装类
         return ResultUtils.success(appService.getAppVOPage(appPage, request));
     }
@@ -229,7 +224,7 @@ public class AppController {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         // 重置审核状态
-        app.setReviewerId(ReviewStatusEnum.PENDING_REVIEW.getValue());
+        app.setReviewStatus(ReviewStatusEnum.PENDING_REVIEW.getValue());
         // 操作数据库
         boolean result = appService.updateById(app);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
@@ -237,4 +232,36 @@ public class AppController {
     }
 
     // endregion
+
+    @PostMapping("/review")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> doAppReview(@RequestBody ReviewRequest reviewRequest, HttpServletRequest request) {
+        ThrowUtils.throwIf(reviewRequest == null, ErrorCode.PARAMS_ERROR);
+        Long id = reviewRequest.getId();
+        Integer reviewStatus = reviewRequest.getReviewStatus();
+        // 校验
+        ReviewStatusEnum reviewStatusEnum = ReviewStatusEnum.getEnumByValue(reviewStatus);
+        if (id == null || reviewStatusEnum == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 判断是否存在
+        App oldApp = appService.getById(id);
+        ThrowUtils.throwIf(oldApp == null, ErrorCode.NOT_FOUND_ERROR);
+        // 已是该状态
+        if (oldApp.getReviewStatus().equals(reviewStatus)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请勿重复审核");
+        }
+        // 更新审核状态
+        User loginUser = userService.getLoginUser(request);
+        App app = new App();
+        app.setId(id);
+        app.setReviewStatus(reviewStatus);
+        app.setReviewMessage(reviewRequest.getReviewMessage());
+        app.setReviewerId(loginUser.getId());
+        app.setReviewTime(new Date());
+        boolean result = appService.updateById(app);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        return ResultUtils.success(true);
+
+    }
 }

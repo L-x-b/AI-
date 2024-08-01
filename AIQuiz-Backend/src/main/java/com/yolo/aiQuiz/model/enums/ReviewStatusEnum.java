@@ -18,7 +18,7 @@ public enum ReviewStatusEnum {
 
 
     private final String text;
-    private final long value;
+    private final int value;
 
     ReviewStatusEnum(String text, int value) {
         this.text = text;
@@ -30,7 +30,7 @@ public enum ReviewStatusEnum {
      *
      * @return value列表
      */
-    public static List<Long> getValues() {
+    public static List<Integer> getValues() {
         return Arrays.stream(values()).map(item -> item.value).collect(Collectors.toList());
     }
 
