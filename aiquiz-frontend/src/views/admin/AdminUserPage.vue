@@ -6,10 +6,15 @@
     @submit="doSearch"
   >
     <a-form-item field="userName" label="用户名">
-      <a-input v-model="formSearchParams.userName" placeholder="请输入用户名" />
+      <a-input
+        allow-clear
+        v-model="formSearchParams.userName"
+        placeholder="请输入用户名"
+      />
     </a-form-item>
     <a-form-item field="userProfile" label="用户简介">
       <a-input
+        allow-clear
         v-model="formSearchParams.userProfile"
         placeholder="请输入用户简介"
       />
@@ -35,6 +40,12 @@
       <template #userAvatar="{ record }">
         <a-avatar :size="64" :src="record.userAvatar" />
       </template>
+      <template #createTime="{ record }">
+        {{ dayjs(record.createTime).format("YYYY-MM-DD HH:mm:ss") }}
+      </template>
+      <template #updateTime="{ record }">
+        {{ dayjs(record.updateTime).format("YYYY-MM-DD HH:mm:ss") }}
+      </template>
       <template #optional="{ record }">
         <a-space>
           <a-button status="danger" @click="doDelete(record)">删除</a-button>
@@ -45,13 +56,14 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 import API from "@/api";
 import {
   deleteUserUsingPost,
   listUserByPageUsingPost,
 } from "@/api/userController";
 import message from "@arco-design/web-vue/es/message";
+import { dayjs } from "@arco-design/web-vue/es/_utils/date";
 
 const formSearchParams = ref<API.UserQueryRequest>({});
 
@@ -157,53 +169,18 @@ const columns = [
   {
     title: "创建时间",
     dataIndex: "createTime",
+    slotName: "createTime",
   },
   {
     title: "更新时间",
     dataIndex: "updateTime",
+    slotName: "updateTime",
   },
   {
     title: "操作",
     slotName: "optional",
   },
 ];
-const data = reactive([
-  {
-    key: "1",
-    name: "Jane Doe",
-    salary: 23000,
-    address: "32 Park Road, London",
-    email: "jane.doe@example.com",
-  },
-  {
-    key: "2",
-    name: "Alisa Ross",
-    salary: 25000,
-    address: "35 Park Road, London",
-    email: "alisa.ross@example.com",
-  },
-  {
-    key: "3",
-    name: "Kevin Sandra",
-    salary: 22000,
-    address: "31 Park Road, London",
-    email: "kevin.sandra@example.com",
-  },
-  {
-    key: "4",
-    name: "Ed Hellen",
-    salary: 17000,
-    address: "42 Park Road, London",
-    email: "ed.hellen@example.com",
-  },
-  {
-    key: "5",
-    name: "William Smith",
-    salary: 27000,
-    address: "62 Park Road, London",
-    email: "william.smith@example.com",
-  },
-]);
 </script>
 
 <style scoped></style>
