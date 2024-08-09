@@ -28,8 +28,8 @@ public class ScoringStrategyExecutor {
         }
         // 根据注解获取策略
         for (ScoringStrategy strategy : scoringStrategyList) {
-            if (scoringStrategy.getClass().isAnnotationPresent(ScoringStrategyConfig.class)) {
-                ScoringStrategyConfig scoringStrategyConfig = scoringStrategy.getClass().getAnnotation(ScoringStrategyConfig.class);
+            if (strategy.getClass().isAnnotationPresent(ScoringStrategyConfig.class)) {
+                ScoringStrategyConfig scoringStrategyConfig = strategy.getClass().getAnnotation(ScoringStrategyConfig.class);
                 if (scoringStrategyConfig.appType() == appType && scoringStrategyConfig.scoringStrategy() == scoringStrategy) {
                     return strategy.doScore(choices, app);
                 }

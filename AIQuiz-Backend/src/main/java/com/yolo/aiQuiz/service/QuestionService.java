@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yolo.aiQuiz.model.dto.question.QuestionQueryRequest;
+import com.yolo.aiQuiz.model.entity.App;
 import com.yolo.aiQuiz.model.entity.Question;
 import com.yolo.aiQuiz.model.vo.QuestionVO;
 
@@ -11,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 问题服务
- *
  */
 public interface QuestionService extends IService<Question> {
 
@@ -19,7 +19,7 @@ public interface QuestionService extends IService<Question> {
      * 校验数据
      *
      * @param question
-     * @param add 对创建的数据进行校验
+     * @param add      对创建的数据进行校验
      */
     void validQuestion(Question question, boolean add);
 
@@ -30,7 +30,7 @@ public interface QuestionService extends IService<Question> {
      * @return
      */
     QueryWrapper<Question> getQueryWrapper(QuestionQueryRequest questionQueryRequest);
-    
+
     /**
      * 获取问题封装
      *
@@ -48,4 +48,6 @@ public interface QuestionService extends IService<Question> {
      * @return
      */
     Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest request);
+
+
 }

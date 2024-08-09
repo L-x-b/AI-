@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * 自定义测评类应用评分策略实现类
  */
-@ScoringStrategyConfig(appType = 0,scoringStrategy = 0)
+@ScoringStrategyConfig(appType = 1,scoringStrategy = 0)
 public class CustomTestScoringStrategyImpl implements ScoringStrategy {
     @Resource
     private QuestionService questionService;
