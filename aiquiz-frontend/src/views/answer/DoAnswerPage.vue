@@ -30,9 +30,10 @@
             v-if="current === questionContent.length"
             circle
             :disabled="!currentAnswer"
+            :loading="submitting"
             @click="doSubmit"
           >
-            查看结果
+            {{ submitting ? "评分中" : "查看结果" }}
           </a-button>
           <a-button v-if="current > 1" circle @click="current -= 1">
             上一题
@@ -79,6 +80,10 @@ const questionContent = ref<API.QuestionContentDTO[]>([]);
 const current = ref(1);
 // 当前题目
 const currentQuestion = ref<API.QuestionContentDTO>({});
+
+// 是否正在提交结果
+const submitting = ref(false);
+
 // 当前题目选项
 const questionOptions = computed(() => {
   return currentQuestion.value?.options
@@ -152,6 +157,7 @@ const doSubmit = async () => {
   if (!props.appId || !answerList) {
     return;
   }
+  submitting.value = true;
   const res = await addUserAnswerUsingPost({
     appId: props.appId as any,
     choices: answerList,
@@ -161,5 +167,6 @@ const doSubmit = async () => {
   } else {
     message.error("提交答案失败，" + res.data.message);
   }
+  submitting.value = false;
 };
 </script>
