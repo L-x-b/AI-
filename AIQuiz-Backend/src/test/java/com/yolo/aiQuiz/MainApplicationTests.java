@@ -8,12 +8,15 @@ import com.zhipu.oapi.service.v4.model.ChatCompletionRequest;
 import com.zhipu.oapi.service.v4.model.ChatMessage;
 import com.zhipu.oapi.service.v4.model.ChatMessageRole;
 import com.zhipu.oapi.service.v4.model.ModelApiResponse;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 主类测试
@@ -28,10 +31,17 @@ class MainApplicationTests {
     private AiManager aiManager;
 
     @Test
-    void contextLoads() {
-//        String string = aiManager.doSyncRequest(null, "1+2等于几", null);
-        String string = aiManager.doSyncRequest("1+2等于几", null, null);
-        System.out.println(string);
+    void contextLoads() throws InterruptedException {
+        Flowable<Long> flowable = Flowable.interval(1, TimeUnit.SECONDS)
+                .map(i -> i + 1)
+                .subscribeOn(Schedulers.io());
+
+        flowable.subscribeOn(Schedulers.io())
+                .doOnNext(item -> System.out.println(item.toString()))
+                .subscribe();
+
+    Thread.sleep(20000L);
+
 
     }
 
