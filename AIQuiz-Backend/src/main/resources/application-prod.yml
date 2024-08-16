@@ -10,7 +10,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: 10.9.108.90:3306/aiquizdb
     username: root
-    password: YoloMysql~
+    password: Yolomysql~
   # Redis 配置
   # todo 需替换配置
   redis:
