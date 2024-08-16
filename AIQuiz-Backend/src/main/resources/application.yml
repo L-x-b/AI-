@@ -6,7 +6,7 @@ spring:
     name: aiQuiz-Backend
   # 默认 dev 环境
   profiles:
-    active: prod
+    active: dev
   # 支持 swagger3
   mvc:
     pathmatch:
@@ -20,10 +20,14 @@ spring:
   # 数据库配置
   # todo 需替换配置
   datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://192.168.101.20:3306/AIQuizDB
+#    username: root
+#    password: mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.101.20:3306/AIQuizDB
+    url: jdbc:mysql://10.9.108.90:3306/aiquizdb
     username: root
-    password: mysql
+    password: Yolomysql~
   redis:
     database: 1
     host: 192.168.101.20
