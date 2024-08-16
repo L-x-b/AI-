@@ -1,20 +1,20 @@
 package com.yolo.aiQuiz.model.dto.userAnswer;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
  * 创建用户回答结果请求
- *
  */
 @Data
 public class UserAnswerAddRequest implements Serializable {
 
+    /**
+     * id
+     */
+    private Long id;
 
     /**
      * 应用 id

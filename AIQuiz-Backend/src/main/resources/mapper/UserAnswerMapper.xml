@@ -28,4 +28,12 @@
         resultScore,userId,createTime,
         updateTime,isDelete
     </sql>
+
+    <select id="doAppAnswerResultCount" resultType="com.yolo.aiQuiz.model.dto.statistic.AppAnswerResultCountDTO">
+        select resultName, count(resultName) as resultCount
+        from user_answer
+        where appId = #{appId}
+        group by resultName
+        order by resultCount desc
+    </select>
 </mapper>

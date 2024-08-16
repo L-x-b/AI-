@@ -1,5 +1,6 @@
 package com.yolo.aiQuiz.controller;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yolo.aiQuiz.annotation.AuthCheck;
@@ -15,9 +16,8 @@ import com.yolo.aiQuiz.model.dto.userAnswer.UserAnswerEditRequest;
 import com.yolo.aiQuiz.model.dto.userAnswer.UserAnswerQueryRequest;
 import com.yolo.aiQuiz.model.dto.userAnswer.UserAnswerUpdateRequest;
 import com.yolo.aiQuiz.model.entity.App;
-import com.yolo.aiQuiz.model.entity.UserAnswer;
 import com.yolo.aiQuiz.model.entity.User;
-import com.yolo.aiQuiz.model.enums.AppTypeEnum;
+import com.yolo.aiQuiz.model.entity.UserAnswer;
 import com.yolo.aiQuiz.model.enums.ReviewStatusEnum;
 import com.yolo.aiQuiz.model.vo.UserAnswerVO;
 import com.yolo.aiQuiz.scoring.ScoringStrategyExecutor;
@@ -26,6 +26,7 @@ import com.yolo.aiQuiz.service.UserAnswerService;
 import com.yolo.aiQuiz.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -79,8 +80,12 @@ public class UserAnswerController {
         User loginUser = userService.getLoginUser(request);
         userAnswer.setUserId(loginUser.getId());
         // 写入数据库
-        boolean result = userAnswerService.save(userAnswer);
-        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        try {
+            boolean result = userAnswerService.save(userAnswer);
+            ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        } catch (DuplicateKeyException e) {
+            // ignore error
+        }
         // 返回新写入的数据 id
         long newUserAnswerId = userAnswer.getId();
 
@@ -89,6 +94,7 @@ public class UserAnswerController {
         try {
             UserAnswer userAnswerWithResult = scoringStrategyExecutor.doScore(userAnswerAddRequest.getChoices(), app);
             userAnswerWithResult.setId(newUserAnswerId);
+            userAnswerWithResult.setAppId(null);
             userAnswerService.updateById(userAnswerWithResult);
         } catch (Exception e) {
             e.printStackTrace();
@@ -265,4 +271,10 @@ public class UserAnswerController {
     }
 
     // endregion
+
+    @GetMapping("/generate/id")
+    public BaseResponse<Long> generateUserAnswerId() {
+        return ResultUtils.success(IdUtil.getSnowflakeNextId());
+    }
+
 }

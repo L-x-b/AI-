@@ -1,6 +1,5 @@
 package com.yolo.aiQuiz.scoring;
 
-import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
@@ -12,18 +11,14 @@ import com.yolo.aiQuiz.model.dto.question.QuestionAnswerDTO;
 import com.yolo.aiQuiz.model.dto.question.QuestionContentDTO;
 import com.yolo.aiQuiz.model.entity.App;
 import com.yolo.aiQuiz.model.entity.Question;
-import com.yolo.aiQuiz.model.entity.ScoringResult;
 import com.yolo.aiQuiz.model.entity.UserAnswer;
 import com.yolo.aiQuiz.model.vo.QuestionVO;
 import com.yolo.aiQuiz.service.QuestionService;
-import com.yolo.aiQuiz.service.ScoringResultService;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

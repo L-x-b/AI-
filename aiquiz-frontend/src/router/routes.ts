@@ -18,6 +18,7 @@ import ACCESS_ENUM from "@/access/accessEnum";
 import MyAnswerPage from "@/views/answer/MyAnswerPage.vue";
 import AnswerResultPage from "@/views/answer/AnswerResultPage.vue";
 import DoAnswerPage from "@/views/answer/DoAnswerPage.vue";
+import AppStatisticPage from "@/views/statistic/AppStatisticPage.vue";
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -160,6 +161,14 @@ export const routes: Array<RouteRecordRaw> = [
     ],
     meta: {
       hideInMenu: true,
+    },
+  },
+  {
+    path: "/app_statistic",
+    name: "应用统计",
+    component: AppStatisticPage,
+    meta: {
+      access: accessEnum.ADMIN,
     },
   },
 ];
