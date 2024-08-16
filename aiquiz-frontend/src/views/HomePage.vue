@@ -61,6 +61,7 @@ const loadData = async () => {
     ...searchParams,
   };
   const res = await listAppByPageUsingPost(params);
+  console.log("res:", res);
   if (res.data.code === 0) {
     dataList.value = res.data.data?.records || [];
     total.value = res.data.data?.total || 0;
