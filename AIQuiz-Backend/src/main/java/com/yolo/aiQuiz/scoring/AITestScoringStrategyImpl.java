@@ -33,8 +33,8 @@ public class AITestScoringStrategyImpl implements ScoringStrategy {
     @Resource
     private AiManager aiManager;
 
-    @Resource
-    private RedissonClient redissonClient;
+//    @Resource
+//    private RedissonClient redissonClient;
 
     /**
      * AI 评分系统消息
