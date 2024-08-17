@@ -107,45 +107,45 @@ public class AITestScoringStrategyImpl implements ScoringStrategy {
         }
 
         // 定义锁
-        RLock lock = redissonClient.getLock(AI_ANSWER_LOCK + key);
-        try {
-            // 竞争分布式锁，等待 3 秒,15 秒自动释放
-            boolean res = lock.tryLock(3, 15, TimeUnit.SECONDS);
-            if (res) {
-                // 抢到分布式锁，才能执行AI操作
+//        RLock lock = redissonClient.getLock(AI_ANSWER_LOCK + key);
+//        try {
+        // 竞争分布式锁，等待 3 秒,15 秒自动释放
+//            boolean res = lock.tryLock(3, 15, TimeUnit.SECONDS);
+//        if (res) {
+        // 抢到分布式锁，才能执行AI操作
 
-                // 2. 根据id查询到题目
-                Question question = questionService.getOne(
-                        Wrappers.lambdaQuery(Question.class).eq(Question::getAppId, appId)
-                );
-                QuestionVO questionVO = QuestionVO.objToVo(question);
-                List<QuestionContentDTO> questionContent = questionVO.getQuestionContent();
-                // 3. 调用 AI 获取结果
-                // 封装 Prompt
-                String userMessage = getAiTestScoringUserMessage(app, questionContent, choices);
-                // AI 生成
-                String result = aiManager.doSyncStableRequest(AI_TEST_SCORING_SYSTEM_MESSAGE, userMessage);
-                // 处理结果
-                int start = result.indexOf('{');
-                int end = result.lastIndexOf('}');
-                String json = result.substring(start, end + 1).replaceAll("\n\n", "");
-                // 4. 构造返回值，填充答案对象的属性
-                UserAnswer userAnswer = JSONUtil.toBean(json, UserAnswer.class);
-                userAnswer.setAppId(appId);
-                userAnswer.setAppType(app.getAppType());
-                userAnswer.setScoringStrategy(app.getScoringStrategy());
-                userAnswer.setChoices(jsonStr);
-                // 将结果保存到缓存中
-                answerCacheMap.put(key, JSONUtil.toJsonStr(userAnswer));
-                return userAnswer;
-            }
-        } finally {
-            if (lock != null && lock.isLocked()) {
-                if (lock.isHeldByCurrentThread()) {
-                    lock.unlock();
-                }
-            }
-        }
-        return null;
+        // 2. 根据id查询到题目
+        Question question = questionService.getOne(
+                Wrappers.lambdaQuery(Question.class).eq(Question::getAppId, appId)
+        );
+        QuestionVO questionVO = QuestionVO.objToVo(question);
+        List<QuestionContentDTO> questionContent = questionVO.getQuestionContent();
+        // 3. 调用 AI 获取结果
+        // 封装 Prompt
+        String userMessage = getAiTestScoringUserMessage(app, questionContent, choices);
+        // AI 生成
+        String result = aiManager.doSyncStableRequest(AI_TEST_SCORING_SYSTEM_MESSAGE, userMessage);
+        // 处理结果
+        int start = result.indexOf('{');
+        int end = result.lastIndexOf('}');
+        String json = result.substring(start, end + 1).replaceAll("\n\n", "");
+        // 4. 构造返回值，填充答案对象的属性
+        UserAnswer userAnswer = JSONUtil.toBean(json, UserAnswer.class);
+        userAnswer.setAppId(appId);
+        userAnswer.setAppType(app.getAppType());
+        userAnswer.setScoringStrategy(app.getScoringStrategy());
+        userAnswer.setChoices(jsonStr);
+        // 将结果保存到缓存中
+        answerCacheMap.put(key, JSONUtil.toJsonStr(userAnswer));
+        return userAnswer;
+//        }
+//        } finally {
+//            if (lock != null && lock.isLocked()) {
+//                if (lock.isHeldByCurrentThread()) {
+//                    lock.unlock();
+//                }
+//            }
+//        }
+//        return null;
     }
 }

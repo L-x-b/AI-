@@ -8,7 +8,7 @@ spring:
   # todo 需替换配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.9.108.90:3306/aiquizdb
+    url: jdbc:mysql://sh-cynosdbmysql-grp-ieyt4pni.sql.tencentcdb.com:26777/aiquizdb
     username: root
     password: Yolomysql~
   # 分库分表配置
@@ -20,7 +20,7 @@ spring:
       aiQuizDB:
         type: com.zaxxer.hikari.HikariDataSource
         driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: jdbc:mysql://10.9.108.90:3306/aiquizdb
+        jdbc-url: jdbc:mysql://sh-cynosdbmysql-grp-ieyt4pni.sql.tencentcdb.com:26777/aiquizdb
         username: root
         password: Yolomysql~
     # 规则配置
@@ -45,11 +45,10 @@ spring:
   # Redis 配置
   # todo 需替换配置
   redis:
-    database: 1
-    host: localhost
-    port: 6379
-    timeout: 5000
-    password: 123456
+#    database: 1
+#    host: 192.168.101.20
+#    port: 6379
+#    timeout: 5000
 mybatis-plus:
   configuration:
     # 生产环境关闭日志

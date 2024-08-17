@@ -6,7 +6,7 @@ spring:
     name: aiQuiz-Backend
   # 默认 dev 环境
   profiles:
-    active: dev
+    active: prod
   # 支持 swagger3
   mvc:
     pathmatch:
@@ -20,14 +20,14 @@ spring:
   # 数据库配置
   # todo 需替换配置
   datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://192.168.101.20:3306/AIQuizDB
-#    username: root
-#    password: mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.9.108.90:3306/aiquizdb
+    url: jdbc:mysql://192.168.101.20:3306/AIQuizDB
     username: root
-    password: Yolomysql~
+    password: mysql
+  #    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    url: jdbc:mysql://sh-cynosdbmysql-grp-ieyt4pni.sql.tencentcdb.com:26777/aiquizdb
+  #    username: root
+  #    password: Yolomysql~
   redis:
     database: 1
     host: 192.168.101.20
@@ -53,7 +53,7 @@ spring:
       aiQuizDB:
         type: com.zaxxer.hikari.HikariDataSource
         driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: jdbc:mysql://192.168.101.20:3306/AIQuizDB
+        jdbc-url: jdbc:mysql://192.168.101.200:3306/AIQuizDB
         username: root
         password: mysql
     # 规则配置
