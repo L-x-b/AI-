@@ -1,8 +1,12 @@
 import axios from "axios";
 import { Message } from "@arco-design/web-vue";
 
+export const isDev = process.env.NODE_ENV === "development";
+
 const myAxios = axios.create({
-  baseURL: "http://localhost:8101",
+  baseURL: isDev
+    ? "http://localhost:8101"
+    : "https://aiquiz-backend-118868-4-1328767113.sh.run.tcloudbase.com",
   timeout: 60000,
   withCredentials: true,
 });
