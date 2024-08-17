@@ -3,6 +3,8 @@ import { Message } from "@arco-design/web-vue";
 
 export const isDev = process.env.NODE_ENV === "development";
 
+console.log(isDev);
+
 const myAxios = axios.create({
   baseURL: isDev
     ? "http://localhost:8101"
