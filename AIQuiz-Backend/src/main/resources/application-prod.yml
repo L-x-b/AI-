@@ -8,7 +8,7 @@ spring:
   # todo 需替换配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://sh-cynosdbmysql-grp-ieyt4pni.sql.tencentcdb.com:26777/aiquizdb
+    url: jdbc:mysql://10.9.108.90:3306/aiquizdb
     username: root
     password: Yolomysql~
   # 分库分表配置
@@ -20,7 +20,7 @@ spring:
       aiQuizDB:
         type: com.zaxxer.hikari.HikariDataSource
         driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: jdbc:mysql://sh-cynosdbmysql-grp-ieyt4pni.sql.tencentcdb.com:26777/aiquizdb
+        jdbc-url: jdbc:mysql://10.9.108.90:3306/aiquizdb
         username: root
         password: Yolomysql~
     # 规则配置
